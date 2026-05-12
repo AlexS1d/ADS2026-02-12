@@ -56,11 +56,59 @@ public class C_LongNotUpSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
+        int[] tails = new int[n]; // Значения хвостов
+        int[] pos = new int[n];   // Индексы этих хвостов в исходном массиве m
+        int[] prev = new int[n];  // Ссылка на предыдущий индекс для восстановления
 
+        int length = 0;
+
+        for (int i = 0; i < n; i++) {
+            // Ищем бинарным поиском место для m[i] в tails.
+            // Нам нужно найти первое число, которое СТРОГО МЕНЬШЕ m[i].
+            // Так как tails убывающий, используем кастомный бинпоиск.
+            int low = 0;
+            int high = length;
+            while (low < high) {
+                int mid = (low + high) / 2;
+                if (tails[mid] >= m[i]) { // Условие невозрастания
+                    low = mid + 1;
+                } else {
+                    high = mid;
+                }
+            }
+
+            int p = low;
+            tails[p] = m[i];
+            pos[p] = i;
+
+            if (p > 0) {
+                prev[i] = pos[p - 1];
+            } else {
+                prev[i] = -1;
+            }
+
+            if (p == length) {
+                length++;
+            }
+        }
+
+        // Восстановление индексов
+        int[] resultIndices = new int[length];
+        int curr = pos[length - 1];
+        for (int i = length - 1; i >= 0; i--) {
+            resultIndices[i] = curr + 1; // +1 по условию задачи (индексы с 1)
+            curr = prev[curr];
+        }
+
+        // Вывод по формату задачи (длина, затем индексы)
+        System.out.println(length);
+        for (int i = 0; i < length; i++) {
+            System.out.print(resultIndices[i] + (i == length - 1 ? "" : " "));
+        }
+        System.out.println();
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return length;
     }
 
 }
