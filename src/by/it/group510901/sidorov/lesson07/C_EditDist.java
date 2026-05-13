@@ -50,9 +50,54 @@ public class C_EditDist {
 
     String getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int n = one.length();
+        int m = two.length();
 
+        // 1. Строим матрицу, как в задаче B
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) dp[i][0] = i;
+        for (int j = 0; j <= m; j++) dp[0][j] = j;
 
-        String result = "";
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
+                dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                        dp[i - 1][j - 1] + cost);
+            }
+        }
+
+        // 2. Восстановление пути (обратный ход)
+        StringBuilder sb = new StringBuilder();
+        int i = n;
+        int j = m;
+
+        while (i > 0 || j > 0) {
+            char s1 = (i > 0) ? one.charAt(i - 1) : 0;
+            char s2 = (j > 0) ? two.charAt(j - 1) : 0;
+
+            // Если символы совпали (Match)
+            if (i > 0 && j > 0 && s1 == s2) {
+                sb.insert(0, "#,");
+                i--; j--;
+            }
+            // Если была замена (Replace)
+            else if (i > 0 && j > 0 && dp[i][j] == dp[i - 1][j - 1] + 1) {
+                sb.insert(0, "~" + s2 + ",");
+                i--; j--;
+            }
+            // Если было удаление (Delete)
+            else if (i > 0 && dp[i][j] == dp[i - 1][j] + 1) {
+                sb.insert(0, "-" + s1 + ",");
+                i--;
+            }
+            // Если была вставка (Insert)
+            else if (j > 0 && dp[i][j] == dp[i][j - 1] + 1) {
+                sb.insert(0, "+" + s2 + ",");
+                j--;
+            }
+        }
+
+        String result = sb.toString();
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
