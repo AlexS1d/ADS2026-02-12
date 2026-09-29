@@ -3,9 +3,23 @@ package by.it.group510901.sidorov.lesson09;
 import java.util.*;
 
 public class ListB<E> implements List<E> {
+    @SuppressWarnings("unchecked")
+    private E[] elements = (E[]) new Object[10];
+    private int size = 0;
 
-
-    //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
+    // Вспомогательный метод для динамического увеличения емкости массива
+    @SuppressWarnings("unchecked")
+    private void grow() {
+        if (size == elements.length) {
+            // Увеличиваем массив в 1.5 раза
+            int newCapacity = elements.length + (elements.length / 2) + 1;
+            E[] newElements = (E[]) new Object[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            elements = newElements;
+        }
+    }
 
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
@@ -14,71 +28,143 @@ public class ListB<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "";
+        if (size == 0) {
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < size; i++) {
+            sb.append(elements[i]);
+            if (i < size - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        grow();
+        elements[size++] = e;
+        return true;
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        // Сохраняем удаляемый элемент, чтобы вернуть его
+        E removedElement = elements[index];
+        // Сдвигаем все элементы после удаляемого на одну позицию влево
+        for (int i = index; i < size - 1; i++) {
+            elements[i] = elements[i + 1];
+        }
+        // Зануляем последний элемент и уменьшаем size
+        elements[--size] = null;
+        return removedElement;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public void add(int index, E element) {
-
+        if (index < 0 || index > size) {
+            return;
+        }
+        grow();
+        // Сдвигаем элементы вправо, освобождая ячейку index
+        for (int i = size; i > index; i--) {
+            elements[i] = elements[i - 1];
+        }
+        elements[index] = element;
+        size++;
     }
 
     @Override
     public boolean remove(Object o) {
+        int index = indexOf(o); // Находим индекс первого совпадения
+        if (index != -1) {
+            remove(index);
+            return true;
+        }
         return false;
     }
 
     @Override
     public E set(int index, E element) {
-        return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        E oldValue = elements[index];
+        elements[index] = element;
+        return oldValue;
     }
-
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
-
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < size; i++) {
+            elements[i] = null;
+        }
+        size = 0;
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        if (o == null) { // Особый случай: поиск null
+            for (int i = 0; i < size; i++) {
+                if (elements[i] == null) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (o.equals(elements[i])) { // Сравниваем через .equals()!
+                    return i;
+                }
+            }
+        }
+        return -1; // Если элемент не найден
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        return elements[index];
     }
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return indexOf(o) != -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if (o == null) {
+            for (int i = size - 1; i >= 0; i--) {
+                if (elements[i] == null) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = size - 1; i >= 0; i--) {
+                if (o.equals(elements[i])) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
-
 
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
