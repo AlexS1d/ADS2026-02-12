@@ -1,6 +1,9 @@
 package by.it.group510901.sidorov.lesson09;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class ListB<E> implements List<E> {
     @SuppressWarnings("unchecked")
