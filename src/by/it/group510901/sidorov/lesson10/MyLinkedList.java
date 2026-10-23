@@ -179,14 +179,12 @@ public class MyLinkedList<E> implements Deque<E> {
             head = next;
         } else {
             prev.next = next;
-            x.prev = null;
         }
 
         if (next == null) {
             tail = prev;
         } else {
             next.prev = prev;
-            x.next = null;
         }
 
         x.data = null;
@@ -195,7 +193,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     private Node<E> getNode(int index) {
-        if (index < (size >> 1)) {
+        if (index < (size / 2)) {
             Node<E> x = head;
             for (int i = 0; i < index; i++) {
                 x = x.next;
