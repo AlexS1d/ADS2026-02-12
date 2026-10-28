@@ -12,7 +12,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
     // Вспомогательные методы кучи
 
-    // сравнение двух элементов (они должны быть Comparable)
+    // Сравнение двух элементов (они должны быть Comparable)
     private int compare(E a, E b) {
         return ((Comparable<E>) a).compareTo(b);
     }
@@ -38,7 +38,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
             int child = 2 * k + 1; // Индекс левого ребёнка
             E c = heap[child];
             int right = child + 1; // Индекс правого ребёнка
-            if (right < size && compare(c, heap[right]) > 0) { // Если левый больше правого сохраняем его
+            if (right < size && compare(c, heap[right]) > 0) { // Если левый больше правого, сохраняем правого
                 child = right;
                 c = heap[child];
             }
@@ -212,69 +212,8 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return removeByCollection(c, false);
     }
 
-    // Методы для реализации интерфейса Queue
-
-    @Override
-    public boolean remove(Object o) {
-        for (int i = 0; i < size; i++) {
-            if (heap[i].equals(o)) {
-                size--;
-                if (i == size) {
-                    heap[i] = null;
-                } else {
-                    E moved = heap[size];
-                    heap[size] = null;
-                    siftDown(i, moved);
-                    if (heap[i] == moved) {
-                        siftUp(i, moved);
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return new Iterator<E>() {
-            private int index = 0;
-
-            @Override
-            public boolean hasNext() {
-                return index < size;
-            }
-
-            @Override
-            public E next() {
-                if (index >= size) {
-                    throw new NoSuchElementException();
-                }
-                return heap[index++];
-            }
-        };
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] result = new Object[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = heap[i];
-        }
-        return result;
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        if (a.length < size) {
-            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
-        }
-        for (int i = 0; i < size; i++) {
-            a[i] = (T) heap[i];
-        }
-        if (a.length > size) {
-            a[size] = null;
-        }
-        return a;
-    }
+    @Override public boolean remove(Object o) {throw new UnsupportedOperationException();}
+    @Override public Iterator<E> iterator() {throw new UnsupportedOperationException();}
+    @Override public Object[] toArray() {throw new UnsupportedOperationException();}
+    @Override public <T> T[] toArray(T[] a) {throw new UnsupportedOperationException();}
 }
